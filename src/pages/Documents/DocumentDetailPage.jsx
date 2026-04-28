@@ -7,6 +7,8 @@ import { ArrowLeft, ExternalLink } from "lucide-react";
 import PageHeader from "../../components/common/PageHeader";
 import Tabs from "../../components/common/Tabs";
 import ChatInterface from "../../components/chat/ChatInterface";
+import AiActions from "../../components/ai/AiActions";
+import FlashcardManager from "../../components/flashcards/FlashcardManager";
 
 const DocumentDetailPage = () => {
   const { id } = useParams();
@@ -75,11 +77,11 @@ const DocumentDetailPage = () => {
   }
 
   const renderAIActions = () => {
-    return "renderAIActions"
+    return <AiActions />
   }
 
   const renderFlashcardsTab = () => {
-    return "fashvard"
+    return <FlashcardManager documentId={id} />
   }
 
   const renderQuizzesTab = () => {
@@ -105,7 +107,7 @@ const DocumentDetailPage = () => {
   return (
     <div>
       <div className="mb-4">
-        <Link to="/dashboard" className="inline-flex items-center gap-2 text-sm text-neutral-600 hover:text-neutral-900 transition-colors">
+        <Link to="/documents" className="inline-flex items-center gap-2 text-sm text-neutral-600 hover:text-neutral-900 transition-colors">
           <ArrowLeft size={16} />
           Back to Documents</Link>
       </div>

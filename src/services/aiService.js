@@ -48,7 +48,9 @@ const explainConcept = async (documentId, concept) => {
 
 const getChatHistory = async (documentId) => {
   try {
-    const response = await axiosInstance.get(API_PATHS.AI.GET_CHAT_HISTORY, { documentId });
+    const url = API_PATHS.AI.GET_CHAT_HISTORY(documentId);
+    const response = await axiosInstance.get(url);
+    console.log(response)
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'Failed to fetch chat history' };
