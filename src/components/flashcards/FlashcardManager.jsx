@@ -242,7 +242,7 @@ const FlashcardManager = ({ documentId }) => {
                   </div>
 
                   <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
-                    <div className="px-3 py-1.5 bg-emerald-50 border border-e-mist-200 rounded-lg">
+                    <div className="px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-lg">
                       <span className="text-sm font-semibold text-emerald-700">
                         {set.cards.length}{" "}
                         {set.cards.length === 1 ? "card" : "cards"}
