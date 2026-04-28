@@ -3,7 +3,7 @@ import flashcardService from "../../services/flashcardService";
 import toast from "react-hot-toast";
 import aiService from "../../services/aiService";
 import Spinner from "../common/Spinner";
-import { ArrowLeft, Brain, Plus, Sparkles, Trash2 } from "lucide-react";
+import { ArrowLeft, Brain, ChevronLeft, ChevronRight, Plus, Sparkles, Trash2 } from "lucide-react";
 import moment from 'moment';
 import Modal from "../common/Modal";
 import Flashcard from "./Flashcard";
@@ -60,11 +60,9 @@ const FlashcardManager = ({ documentId }) => {
   }
 
   const handlePrevCard = () => {
-    if (selectedSet) {
+    if (selectedSet && currentCardIndex > 0) {
       handleReview(currentCardIndex);
-      setCurrentCardIndex(
-        (prevIndex) => (prevIndex - 1) % selectedSet.cards.length
-      )
+      setCurrentCardIndex((prevIndex) => prevIndex - 1);
     }
   }
 
@@ -76,12 +74,27 @@ const FlashcardManager = ({ documentId }) => {
       await flashcardService.reviewFlashcard(currentCard._id, index);
       toast.success("Flashcard reviewed");
     } catch (error) {
-      toast.error("Failed to review flashcard.")
+      toast.error(error.message || "Failed to review flashcard.")
     }
   }
 
   const handleToggleStar = async (cardId) => {
-
+    try {
+      await flashcardService.toggleStar(cardId);
+      const updatedSets = flashcardSets.map((set) => {
+        if (set._id === selectedSet._id) {
+          const updatedCards = set.cards.map((card) => card._id === cardId ? { ...card, isStarred: !card.isStarred } : card);
+          return { ...set, cards: updatedCards };
+        }
+        return set;
+      });
+      setFlashcardSets(updatedSets);
+      setSelectedSet(updatedSets.find((set) => set._id === selectedSet._id));
+      toast.success("Flashcard started status updated!");
+    } catch (error) {
+      toast.error("Failed to update star status.")
+      console.error(error);
+    }
   };
 
   const handleDeleteRequest = (e, set) => {
@@ -107,7 +120,7 @@ const FlashcardManager = ({ documentId }) => {
   }
 
   const handleSelectSet = (set) => {
-    setSelectedSet(Set);
+    setSelectedSet(set);
     setCurrentCardIndex(0);
   }
 
@@ -115,17 +128,36 @@ const FlashcardManager = ({ documentId }) => {
     const currentCard = selectedSet.cards[currentCardIndex];
 
     return (
-      <div className="">
-        <button onClick={() => setSelectedSet(null)}>
-          <ArrowLeft className="" strokeWidth={2} />
+      <div className="space-y-8">
+        <button onClick={() => setSelectedSet(null)} className="group inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors duration-200">
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" strokeWidth={2} />
           Back to Sets
         </button>
-        <div className="">
-          <div className="">
+        <div className="flex flex-col items-center space-y-8">
+          <div className="w-full max-w-2xl">
             <Flashcard flashcard={currentCard} onToggleStar={handleToggleStar} />
           </div>
+
+          <div className="flex items-center gap-6">
+            <button onClick={handlePrevCard} disabled={selectedSet.cards.length <= 1} className="group flex items-center gap-2 px-5 h-11 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-sm rounded-xl transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-slate-100">
+              <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform duration-200" strokeWidth={2.5} />
+              Previous
+            </button>
+            <div className="px-4 py-2 bg-slate-50 rounded-lg border border-slate-200">
+              <span className="text-sm font-semibold text-slate-700">
+                {currentCardIndex + 1}{" "}
+                <span className="text-slate-400 font-normal">/</span>{" "}
+                {selectedSet.cards.length}
+              </span>
+            </div>
+
+            <button onClick={handleNextCard} disabled={selectedSet.cards.length <= 1} className="group flex items-center gap-2 px-5 h-11 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-sm rounded-xl transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-slate-100">
+              Next
+              <ChevronRight className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform duration-200" strokeWidth={2.5} />
+            </button>
+          </div>
         </div>
-      </div>
+      </div >
     )
   }
 
