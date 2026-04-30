@@ -14,7 +14,6 @@ const FlashCardsListPage = () => {
     const fetchFlashcardSets = async () => {
       try {
         const response = await flashcardService.getAllFlashcardSets();
-        console.log("fetchflashcardssets__", response.data);
         setFlashcardSets(response.data);
       } catch (error) {
         toast.error("Failed to fetch flashcard sets.")
@@ -41,7 +40,7 @@ const FlashCardsListPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {
           flashcardSets.map((set) => (
-            <FlashcardSetCard key={set._id} flashcardSets={set} />
+            <FlashcardSetCard key={set._id} flashcardSet={set} />
           ))
         }
       </div>
