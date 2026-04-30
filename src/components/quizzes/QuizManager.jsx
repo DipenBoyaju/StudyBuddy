@@ -125,7 +125,7 @@ const QuizManager = ({ documentId }) => {
       <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
         <div className="space-y-4">
           <p className="text-sm text-neutral-600">
-            Are you sure you want to delete the quiz: <span className="font-semibold text-neutral-900">this quiz</span>? This action cannot be undone.
+            Are you sure you want to delete the quiz: <span className="font-semibold text-neutral-900">{quizzes.title}</span>? This action cannot be undone.
           </p>
           <div className="flex justify-end gap-2 pt-2">
             <Button type="submit" variant="secondary" onClick={() => setIsDeleteModalOpen(false)} disabled={deleting}>
