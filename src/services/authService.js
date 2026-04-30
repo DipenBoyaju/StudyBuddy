@@ -39,7 +39,7 @@ const updateProfile = async () => {
 
 const changePassword = async (passwords) => {
   try {
-    const response = await axiosInstance.post(API_PATHS.AUTH.UPDATE_PROFILE, passwords);
+    const response = await axiosInstance.post(API_PATHS.AUTH.CHANGE_PASSWORD, passwords);
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: "An unknown error occured" };
