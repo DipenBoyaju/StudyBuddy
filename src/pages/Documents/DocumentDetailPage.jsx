@@ -36,15 +36,15 @@ const DocumentDetailPage = () => {
     if (!document?.data?.filePath) return null;
 
     const filePath = document.data.filePath;
-    console.log('path', filePath);
 
     if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
       return filePath;
     }
 
     // const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-    const baseUrl = 'http://localhost:8000';
-    return `${baseUrl}${filePath.startsWith('/') ? '' : '/'}${filePath}`;
+    const backendUrl = 'http://localhost:8000';
+    const sanitizedPath = filePath.startsWith('/') ? filePath.substring(1) : filePath;
+    return `${backendUrl}/${sanitizedPath}`;
   };
 
   const renderContent = () => {
@@ -66,8 +66,8 @@ const DocumentDetailPage = () => {
             Open in new tab
           </a>
         </div>
-        <div className="bg-gray-100 p-1">
-          <iframe src={pdfUrl} frameborder="0" title="PDF Viewer" className="bg-white rounded border border-gray-300" style={{ colorScheme: 'light' }}></iframe>
+        <div className="bg-gray-100 p-1 w-full">
+          <iframe src={pdfUrl} frameBorder="0" title="PDF Viewer" className="bg-white rounded border border-gray-300 w-full min-h-200" style={{ colorScheme: 'light' }}></iframe>
         </div>
       </div>
     )

@@ -10,13 +10,9 @@ const getDocuments = async () => {
   }
 }
 
-const uploadDocument = async (formData) => {
+const uploadDocument = async (payload) => {
   try {
-    const response = await axiosInstance.post(API_PATHS.DOCUMENTS.UPLOAD, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      }
-    });
+    const response = await axiosInstance.post(API_PATHS.DOCUMENTS.UPLOAD, payload);
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'Failed to upload documents' }

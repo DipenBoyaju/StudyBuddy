@@ -5,6 +5,7 @@ import Button from "../../components/common/Button";
 import { FileText, Plus, Trash2, Upload, X } from "lucide-react";
 import Spinner from "../../components/common/Spinner";
 import DocumentCard from "../../components/documents/DocumentCard";
+import { useUploadThing } from "../../utils/uploadthing";
 
 const DocumentListPage = () => {
   const [documents, setDocuments] = useState([]);
@@ -43,30 +44,44 @@ const DocumentListPage = () => {
     }
   };
 
+  const { startUpload, isUploading } = useUploadThing("pdfUploader", {
+    onClientUploadComplete: async (res) => {
+      const uploadedFile = res[0];
+
+      const payload = {
+        title: uploadTitle,
+        fileUrl: uploadedFile.url,
+        fileKey: uploadedFile.key,
+        fileName: uploadedFile.name,
+        fileSize: uploadedFile.size
+      };
+      setUploading(true);
+      try {
+        await documentService.uploadDocument(payload);
+        toast.success("Document uploaded and processed!");
+        setIsUploadModalOpen(false);
+        setUploadFile(null);
+        setUploadTitle("");
+        fetchDocuments();
+      } catch (error) {
+        toast.error("Database sync failed.");
+      } finally {
+        setUploading(false)
+      }
+    },
+    onUploadError: (error) => {
+      toast.error(`Cloud upload failed: ${error.message}`);
+    },
+  });
+
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!uploadFile || !uploadTitle) {
       toast.error("Please provide a title and select a file");
       return;
     }
-    setUploading(true);
-    const formData = new FormData();
-    formData.append("file", uploadFile);
-    formData.append("title", uploadTitle);
+    await startUpload([uploadFile]);
 
-    try {
-      await documentService.uploadDocument(formData);
-      toast.success("Document uploaded successfully");
-      setIsUploadModalOpen(false);
-      setUploadFile(null);
-      setUploadTitle("");
-      setLoading(true);
-      fetchDocuments();
-    } catch (error) {
-      toast.error(error.message || "Upload failed.")
-    } finally {
-      setLoading(false);
-    }
   }
 
   const handleDeleteRequest = (doc) => {
@@ -199,9 +214,9 @@ const DocumentListPage = () => {
                 <button type="button" onClick={() => setIsUploadModalOpen(false)} disabled={uploading} className="flex-1 h-11 px-4 border-2 border-slate-200 rounded-xl bg-white text-slate-700 text-sm font-semibold hover:bg-slate-50 hover:border-slate-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                   Cancel
                 </button>
-                <button type="submit" disabled={uploading} className="flex-1 h-11 px-4 bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white text-sm font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-emerald-500/25 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]">
+                <button type="submit" disabled={uploading || isUploading} className="flex-1 h-11 px-4 bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white text-sm font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-emerald-500/25 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]">
                   {
-                    uploading ? (
+                    uploading || isUploading ? (
                       <span className="flex items-center justify-center gap-2">
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         Uploading...</span>
