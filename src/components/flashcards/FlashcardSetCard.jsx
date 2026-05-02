@@ -4,7 +4,6 @@ import { BookOpen, Sparkles, TrendingUp } from 'lucide-react';
 
 const FlashcardSetCard = ({ flashcardSet }) => {
   const navigate = useNavigate();
-  console.log(flashcardSet)
 
   const handleStudyNow = () => {
     navigate(`/documents/${flashcardSet.documentId}/flashcards`);

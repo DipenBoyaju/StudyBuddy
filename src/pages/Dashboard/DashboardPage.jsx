@@ -12,7 +12,6 @@ const DashboardPage = () => {
     const fetchDashboardData = async () => {
       try {
         const response = await progressService.getDashboardData();
-        console.log("Data__getDashboardData", response);
 
         setDashboardData({
           overview: response.data,

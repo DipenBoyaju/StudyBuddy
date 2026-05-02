@@ -16,7 +16,6 @@ const QuizResultPage = () => {
       try {
         const data = await quizService.getQuizResults(quizId);
         setResults(data);
-        console.log(data)
       } catch (error) {
         toast.error('Failed to fetch quiz results');
         console.error(error)
