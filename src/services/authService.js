@@ -28,7 +28,7 @@ const getProfile = async () => {
   }
 }
 
-const updateProfile = async () => {
+const updateProfile = async (userData) => {
   try {
     const response = await axiosInstance.post(API_PATHS.AUTH.UPDATE_PROFILE, userData);
     return response.data;

@@ -42,7 +42,7 @@ const DocumentDetailPage = () => {
     }
 
     // const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-    const backendUrl = 'http://localhost:8000';
+    const backendUrl = 'https://studybuddy-bkd.onrender.com';
     const sanitizedPath = filePath.startsWith('/') ? filePath.substring(1) : filePath;
     return `${backendUrl}/${sanitizedPath}`;
   };
